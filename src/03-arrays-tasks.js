@@ -525,8 +525,23 @@ function distinct(/* arr */) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+
+function group(array, keySelector, valueSelector) {
+  const map = new Map();
+  array.map((obj) => {
+    const keys = Object.keys(obj);
+    map.set(
+      keySelector(obj),
+      array.filter((item) => {
+        if (item[keys[0]] === obj[keys[0]]) {
+          return valueSelector(item);
+        }
+        return 0;
+      }).map((item) => item[keys[1]]),
+    );
+    return map;
+  });
+  return map;
 }
 
 
@@ -543,8 +558,8 @@ function group(/* array, keySelector, valueSelector */) {
  *   [[1, 2], [3, 4], [5, 6]], (x) => x     =>   [ 1, 2, 3, 4, 5, 6 ]
  *   ['one','two','three'], x=>x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  return arr.map((item) => childrenSelector(item)).flat();
 }
 
 
@@ -560,8 +575,19 @@ function selectMany(/* arr, childrenSelector */) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  if (indexes.length === 1) {
+    return arr.find((_, idx) => indexes[0] === idx);
+  }
+  if (indexes.length === 2) {
+    return arr.find((_, idx) => indexes[0] === idx).find((_, idx) => idx === indexes[1]);
+  }
+  if (indexes.length === 3) {
+    return arr.find((_, idx) => indexes[0] === idx)
+      .find((_, idx) => idx === indexes[1])
+      .find((_, idx) => idx === indexes[2]);
+  }
+  return 0;
 }
 
 
@@ -583,8 +609,13 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const quan = Math.floor(arr.length / 2);
+  const res = [];
+  res.push(arr.splice(arr.length - quan, arr.length));
+  res.push(arr.splice(quan, arr.length));
+  res.push(arr.splice(0, arr.length));
+  return res.flat();
 }
 
 
